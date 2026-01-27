@@ -1,0 +1,11 @@
+echo "# giga-gadgets-backend" >> README.md
+git init
+git add README.md
+git commit -m "first commit"
+git branch -M master
+git remote add origin https://github.com/Taanveer22/giga-gadgets-backend.git
+git push -u origin master
+
+git remote add origin https://github.com/Taanveer22/giga-gadgets-backend.git
+git branch -M master
+git push -u origin master
