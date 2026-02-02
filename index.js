@@ -43,6 +43,15 @@ async function run() {
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
 
+    // === get method ===
+    app.get("/myCart/:email", async (req, res) => {
+      const email = req.params.email;
+      // Use an object to specify the field name
+      const query = { email: email };
+      const result = await productsCollection.find(query).toArray();
+      res.send(result);
+    });
+
     // === post method ===
     app.post("/addProduct", async (req, res) => {
       const doc = req.body;
