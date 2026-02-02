@@ -22,7 +22,6 @@ app.use(cors());
 app.use(express.json());
 
 // 04
-
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.89rnkti.mongodb.net/?appName=Cluster0`;
 // console.log(process.env.DB_PASSWORD);
 // console.log(process.env.DB_USER);
@@ -36,10 +35,21 @@ const client = new MongoClient(uri, {
   },
 });
 
+const database = client.db("productsDB");
+const productsCollection = database.collection("productsColl");
+
 async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
+
+    // === post method ===
+    app.post("/addProduct", async (req, res) => {
+      const doc = req.body;
+      const result = await productsCollection.insertOne(doc);
+      res.send(result);
+    });
+
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log(
