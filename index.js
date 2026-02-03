@@ -11,7 +11,7 @@
 const express = require("express");
 const cors = require("cors");
 require("dotenv").config();
-const { MongoClient, ServerApiVersion } = require("mongodb");
+const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 
 // 02
 const app = express();
@@ -43,12 +43,18 @@ async function run() {
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
 
-    // === get method ===
-    app.get("/myCart/:email", async (req, res) => {
-      const email = req.params.email;
+    // === get method for all products ===
+    app.get("/products/:email", async (req, res) => {
       // Use an object to specify the field name
-      const query = { email: email };
+      const query = { email: req.params.email };
       const result = await productsCollection.find(query).toArray();
+      res.send(result);
+    });
+
+    // === get method for single product ===
+    app.get("/product/:id", async (req, res) => {
+      const query = { _id: new ObjectId(req.params.id) };
+      const result = await productsCollection.findOne(query);
       res.send(result);
     });
 
@@ -56,6 +62,24 @@ async function run() {
     app.post("/addProduct", async (req, res) => {
       const doc = req.body;
       const result = await productsCollection.insertOne(doc);
+      res.send(result);
+    });
+
+    // === put method ===
+    app.put("/updateProduct/:id", async (req, res) => {
+      const query = { _id: new ObjectId(req.params.id) };
+      const update = {
+        $set: {
+          name: req.body.name,
+          brand: req.body.brand,
+          price: req.body.price,
+          image: req.body.image,
+          type: req.body.type,
+          rating: req.body.rating,
+        },
+      };
+      const options = {};
+      const result = await productsCollection.updateOne(query, update, options);
       res.send(result);
     });
 
